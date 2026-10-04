@@ -3,9 +3,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Guardias de enfermería</title>
 <style>
-:root{--bg:#f3ece6;--card:#fff9f4;--line:#dccfc4;--tx:#3a2a20;--mut:#8a7565;--acc:#8a4b2a;--off:#b8a99c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1a12;--card:#452c20;--line:#6b4d3d;--tx:#f5e9df;--mut:#c2a894;--acc:#e8b48f;--off:#8a6f5e}}
-:root[data-theme="dark"]{--bg:#2a1a12;--card:#452c20;--line:#6b4d3d;--tx:#f5e9df;--mut:#c2a894;--acc:#e8b48f;--off:#8a6f5e}
+:root{--bg:#f3ece6;--card:#fff9f4;--line:#dccfc4;--tx:#3a2a20;--mut:#8a7565;--acc:#8a4b2a;--tgt:#2e7d6f;--off:#b8a99c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1a12;--card:#452c20;--line:#6b4d3d;--tx:#f5e9df;--mut:#c2a894;--acc:#e8b48f;--tgt:#7fd4c3;--off:#8a6f5e}}
+:root[data-theme="dark"]{--bg:#2a1a12;--card:#452c20;--line:#6b4d3d;--tx:#f5e9df;--mut:#c2a894;--acc:#e8b48f;--tgt:#7fd4c3;--off:#8a6f5e}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 "Trebuchet MS","Segoe UI",system-ui,sans-serif}
@@ -16,25 +16,32 @@ details,.card{background:var(--card);border-radius:18px;padding:12px 14px;margin
 summary{cursor:pointer;font-weight:700}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}
-input,select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px;width:100%}
+input,select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 8px}
 .names{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.names input{width:100%}
 .head{display:flex;align-items:center;justify-content:space-between;margin:2px 4px 8px}
 .head button{background:none;border:0;color:var(--tx);font-size:24px;padding:4px 14px;cursor:pointer}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--card);border-radius:18px;overflow:hidden;border:1px solid var(--line)}
 .dow{text-align:center;font-weight:700;padding:6px 0;font-size:13px}
-.cell{min-height:78px;border-top:1px solid var(--line);border-left:1px solid var(--line);padding:3px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.cell{min-height:82px;border-top:1px solid var(--line);border-left:1px solid var(--line);padding:3px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden}
 .cell:nth-child(7n+1){border-left:0}
 .cell .n{font-size:13px;text-align:center}
 .cell.off .n{color:var(--off)}
 .cell.sel{outline:2px solid var(--acc);outline-offset:-2px}
+.cell.target{outline:2px dashed var(--tgt);outline-offset:-2px}
+.cell.past{opacity:.55}
 .chip{font-size:10px;line-height:1.5;color:#fff;border-radius:6px;padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-.chip.dim{opacity:.25}.chip.warn{background:#c0392b}.chip.fr{background:transparent;border:1px dashed var(--acc);color:var(--acc)}
-.legend{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
-.legend button{border:2px solid transparent;color:#fff;border-radius:14px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer}
-.legend button.on{border-color:var(--tx)}
+.chip.warn{background:#c0392b}.chip.fr{background:transparent;border:1px dashed var(--acc);color:var(--acc)}
+.filters{display:flex;flex-direction:column;gap:6px;margin:0 0 10px}
+.frow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.frow>span{font-size:12px;color:var(--mut);min-width:94px}
+.filters button{border:2px solid transparent;color:#fff;border-radius:14px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer;opacity:.4}
+.filters button.on{border-color:var(--tx);opacity:1}
 .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0;border-top:1px solid var(--line)}
 .row b{min-width:110px}
 .pill{border:0;color:#fff;border-radius:12px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer}
+.pill.fr{background:transparent;border:1px dashed var(--acc);color:var(--acc)}
+.pill.confirm{background:var(--tgt)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{text-align:left;padding:6px 4px;border-top:1px solid var(--line)}
 th{color:var(--mut);font-weight:600}
@@ -45,117 +52,194 @@ th{color:var(--mut);font-weight:600}
 <details open><summary>Configuración</summary>
 <div class="grid">
 <label>Enfermeras disponibles<input id="n" type="number" min="1" max="40" value="6"></label>
-<label>Francos por mes<input id="f" type="number" min="0" max="31" placeholder="Auto (1 por semana)"></label>
-<label>Duración de guardia (hs)<input id="dur" type="number" min="1" max="24" value="12"></label>
-<label>Descanso mínimo entre guardias (hs)<input id="rest" type="number" min="0" max="48" value="12"></label>
+<label>Francos por semana<input id="fpw" type="number" min="0" max="7" value="1"></label>
+<label>Hora de entrada 1ª guardia<input id="startT" type="time" value="08:00"></label>
+<label>Duración de guardia (hs)<input id="dur" type="number" min="1" max="24" step="0.5" value="12"></label>
+<label>Descanso mínimo (hs)<input id="rest" type="number" min="0" max="48" step="0.5" value="12"></label>
 <label>Enfermeras por guardia<input id="cov" type="number" min="1" max="10" value="1"></label>
 </div>
 <div class="names" id="names"></div>
-<p class="msg">Las guardias arrancan a las 08:00 y se encadenan según la duración (12 hs: 08:00 y 20:00).</p>
+<p class="msg">Las guardias se encadenan sin huecos a partir de la hora de entrada; si la duración no divide 24 hs, el resto se calcula igual (puede haber guardias que crucen la medianoche). Los francos se reparten automáticamente y de forma pareja entre todas; para ajustar una fecha puntual, usá los intercambios.</p>
 </details>
 <div class="head"><button onclick="mv(-1)" aria-label="Mes anterior">‹</button><h2 id="ttl"></h2><button onclick="mv(1)" aria-label="Mes siguiente">›</button></div>
-<div class="legend" id="leg"></div>
+<div class="filters">
+<div class="frow"><span>Mostrar guardias de</span><span id="legG"></span></div>
+<div class="frow"><span>Mostrar francos de</span><span id="legF"></span></div>
+</div>
 <div class="cal" id="cal"></div>
 <div id="panel"></div>
 <div class="card" id="sum" style="margin-top:12px"></div>
 </main>
 <script>
 const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],DOW=['D','L','M','M','J','V','S'];
-const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let cfg={n:6,f:0,dur:12,rest:12,cov:1,names:[]},t=new Date(),view={y:t.getFullYear(),m:t.getMonth()},store={},sel=null,hl=null,sw=null;
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&lt;','>':'&gt;','"':'&quot;','&':'&amp;'}[c]||c));
+let cfg={n:6,fpw:1,startH:8,startM:0,dur:12,rest:12,cov:1,names:[]};
+let view;{const t=new Date();view={y:t.getFullYear(),m:t.getMonth()}}
+let P=null,sel=null,origin=null,chosenIdx=null,targetDay=null;
+let filters={G:null,F:null};
 const nm=i=>cfg.names[i]||('Enfermera '+(i+1)),hue=i=>(i*137.5)%360,col=i=>`hsl(${hue(i)} 45% 38%)`;
 const dim=(y,m)=>new Date(y,m+1,0).getDate(),pad=n=>String(n).padStart(2,'0');
-const ic=(P,k)=>P.S==2?(k?'☾':'☀'):pad((8+k*P.dur)%24)+'h';
-const lbl=(P,x)=>pad(x.s%24)+':00–'+pad(x.e%24)+':00';
+const fmtT=min=>{min=((min%1440)+1440)%1440;return pad(Math.floor(min/60))+':'+pad(min%60)};
+const NOTICE_H=72;
+function cutoffMs(){return Date.now()+NOTICE_H*3600000}
+function monthBaseMs(){return new Date(view.y,view.m,1,0,0,0,0).getTime()}
+function shiftStartMs(x){return monthBaseMs()+x.s*60000}
+function dayStartMs(d){return monthBaseMs()+(d-1)*1440*60000}
+const shiftLocked=x=>shiftStartMs(x)<cutoffMs();
+const dayLocked=d=>dayStartMs(d)<cutoffMs();
 
-function ok(P,n,x,ign){
+function overlap(a,b){return a.s<b.e&&b.s<a.e}
+function hasFrancoOverlap(nurseIdx,s,e){for(const f of P.fr[nurseIdx]){const a=(f-1)*1440,b=f*1440;if(s<b&&a<e)return true}return false}
+function ok(n,x,ignoreId){
  if(x.n.includes(n))return false;
- for(const f of P.fr[n]){const a=(f-1)*24;if(x.s<a+24&&x.e>a)return false}
- for(const id of P.mine[n]){if(id===ign)continue;const o=P.sh[id];
-  const g=x.s>=o.e?x.s-o.e:(o.s>=x.e?o.s-x.e:-1);if(g<P.rest)return false}
+ if(hasFrancoOverlap(n,x.s,x.e))return false;
+ for(const id of P.mine[n]){if(id===ignoreId)continue;const o=P.sh[id];
+  if(overlap(x,o))return false;
+  const gap=x.s>=o.e?x.s-o.e:o.s-x.e;
+  if(gap<P.restMin)return false}
  return true}
-function put(P,n,x){x.n.push(n);P.mine[n].add(x.id)}
-function del(P,n,x){x.n.splice(x.n.indexOf(n),1);P.mine[n].delete(x.id)}
+function put(n,x){x.n.push(n);P.mine[n].add(x.id)}
+function del(n,x){x.n.splice(x.n.indexOf(n),1);P.mine[n].delete(x.id)}
+function nurseFreeOnDay(n,day){for(const id of P.mine[n]){const o=P.sh[id];if(o.s<day*1440&&(day-1)*1440<o.e)return false}return true}
 
-function gen(y,m){
- const D=dim(y,m),N=cfg.n,dur=cfg.dur,S=Math.floor(24/dur),F=cfg.f>0?Math.min(cfg.f,D):Math.floor(D/7);
- const fr=Array.from({length:N},(_,i)=>Array.from({length:F},(_,k)=>Math.floor((k+i/N)*D/F)+1));
- const sh=[];for(let d=1;d<=D;d++)for(let k=0;k<S;k++){const s=(d-1)*24+8+k*dur;sh.push({id:sh.length,d,k,s,e:s+dur,n:[]})}
- const P={sh,fr,D,S,y,m,dur,F,rest:cfg.rest,cov:cfg.cov,N,mine:Array.from({length:N},()=>new Set()),unc:0};
- const cnt=Array.from({length:N},()=>Array(S).fill(0)),all=[...Array(N).keys()];
- for(const x of sh)for(let c=0;c<cfg.cov;c++){
-  const cs=all.filter(n=>ok(P,n,x)).sort((a,b)=>P.mine[a].size-P.mine[b].size||cnt[a][x.k]-cnt[b][x.k]||a-b);
-  if(!cs.length){P.unc++;continue}put(P,cs[0],x);cnt[cs[0]][x.k]++}
- // equilibrado: pasa guardias de la más cargada a la menos cargada
+function buildShifts(D,startMin,durMin){
+ const total=D*1440,arr=[];let s=startMin;
+ while(s<total){arr.push({id:arr.length,s,e:s+durMin,day:Math.floor(s/1440)+1,n:[]});s+=durMin}
+ return arr}
+function defaultFrancos(N,D,reqF){
+ const out=[];
+ for(let i=0;i<N;i++){const set=new Set();let k=0,guard=0;
+  while(set.size<reqF&&guard<reqF*6+20){const d=Math.min(D,Math.max(1,Math.floor((k+i/N)*D/reqF)+1));
+   if(!set.has(d))set.add(d);else{for(let d2=1;d2<=D&&set.size<reqF;d2++){if(!set.has(d2)){set.add(d2);break}}}
+   k++;guard++}
+  out.push(set)}
+ return out}
+
+function generate(){
+ const D=dim(view.y,view.m),startMin=cfg.startH*60+cfg.startM,durMin=Math.round(cfg.dur*60),restMin=Math.round(cfg.rest*60);
+ const weeks=Math.ceil(D/7),reqF=cfg.fpw*weeks,N=cfg.n;
+ const sh=buildShifts(D,startMin,durMin);
+ P={y:view.y,m:view.m,D,N,durMin,restMin,cov:Math.min(cfg.cov,N),weeks,reqF,sh,fr:defaultFrancos(N,D,reqF),mine:Array.from({length:N},()=>new Set()),unc:0};
+ assignAll()}
+function assignAll(){
+ for(const x of P.sh)x.n=[];for(const s of P.mine)s.clear();P.unc=0;
+ const all=[...Array(P.N).keys()];
+ for(const x of P.sh)for(let c=0;c<P.cov;c++){
+  const cs=all.filter(n=>ok(n,x)).sort((a,b)=>P.mine[a].size-P.mine[b].size||a-b);
+  if(!cs.length){P.unc++;continue}put(cs[0],x)}
  for(let it=0;it<4000;it++){
   const o=all.slice().sort((a,b)=>P.mine[b].size-P.mine[a].size);let moved=false;
   out:for(const a of o)for(const b of o.slice().reverse()){
    if(P.mine[a].size-P.mine[b].size<2)break;
-   for(const id of P.mine[a]){const x=sh[id];if(ok(P,b,x)){del(P,a,x);put(P,b,x);moved=true;break out}}}
-  if(!moved)break}
- return P}
-const get=()=>{const k=view.y+'-'+view.m;return store[k]||(store[k]=gen(view.y,view.m))};
+   for(const id of P.mine[a]){const x=P.sh[id];if(ok(b,x,undefined)){del(a,x);put(b,x);moved=true;break out}}}
+  if(!moved)break}}
 
 function render(){
- const P=get(),{y,m}=view,D=P.D;
- $('#ttl').textContent=MES[m]+' '+y;
- $('#leg').innerHTML=Array.from({length:P.N},(_,i)=>`<button class="${hl===i?'on':''}" style="background:${col(i)}" onclick="hl=hl===${i}?null:${i};render()">${esc(nm(i))}</button>`).join('');
- const first=new Date(y,m,1).getDay(),tot=Math.ceil((first+D)/7)*7;
+ $('#ttl').textContent=MES[view.m]+' '+view.y;
+ $('#legG').innerHTML=Array.from({length:P.N},(_,i)=>`<button class="${!filters.G||filters.G.has(i)?'on':''}" style="background:${col(i)}" onclick="togF('G',${i})">${esc(nm(i))}</button>`).join('');
+ $('#legF').innerHTML=Array.from({length:P.N},(_,i)=>`<button class="${!filters.F||filters.F.has(i)?'on':''}" style="background:${col(i)}" onclick="togF('F',${i})">${esc(nm(i))}</button>`).join('');
+ const {y,m}=view,D=P.D,first=new Date(y,m,1).getDay(),tot=Math.ceil((first+D)/7)*7;
  let h=DOW.map(d=>`<div class="dow">${d}</div>`).join('');
+ const byDay=Array.from({length:D+1},()=>[]);
+ for(const x of P.sh)byDay[x.day].push(x);
  for(let i=0;i<tot;i++){
   const d=i-first+1;
   if(d<1||d>D){h+=`<div class="cell off"><div class="n">${new Date(y,m,d).getDate()}</div></div>`;continue}
   let c='';
-  for(const x of P.sh.slice((d-1)*P.S,d*P.S)){
-   for(const n of x.n)c+=`<span class="chip ${hl!==null&&hl!==n?'dim':''}" style="background:${col(n)}">${ic(P,x.k)} ${esc(nm(n))}</span>`;
-   if(x.n.length<P.cov)c+=`<span class="chip warn">${ic(P,x.k)} sin cubrir</span>`}
-  if(hl!==null&&P.fr[hl].includes(d))c+='<span class="chip fr">Franco</span>';
-  h+=`<div class="cell ${sel===d?'sel':''}" onclick="sel=${d};sw=null;render()"><div class="n">${d}</div>${c}</div>`}
+  for(const x of byDay[d]){
+   for(const n of x.n){if(filters.G&&!filters.G.has(n))continue;c+=`<span class="chip" style="background:${col(n)}">${fmtT(x.s)} ${esc(nm(n))}</span>`}
+   if(x.n.length<P.cov)c+=`<span class="chip warn">${fmtT(x.s)} sin cubrir</span>`}
+  for(let n=0;n<P.N;n++){if(filters.F&&!filters.F.has(n))continue;if(P.fr[n].has(d))c+=`<span class="chip fr">Franco ${esc(nm(n))}</span>`}
+  const cls=['cell'];if(sel===d)cls.push('sel');if(targetDay===d)cls.push('target');if(dayLocked(d))cls.push('past');
+  h+=`<div class="${cls.join(' ')}" onclick="pick(${d})"><div class="n">${d}</div>${c}</div>`}
  $('#cal').innerHTML=h;
- panel(P);summary(P)}
+ panel();summary()}
+function togF(kind,i){
+ let s=filters[kind];
+ if(!s)s=new Set(Array.from({length:P.N},(_,k)=>k));
+ else s=new Set(s);
+ if(s.has(i))s.delete(i);else s.add(i);
+ if(s.size===P.N)s=null;
+ filters[kind]=s;render()}
 
-function panel(P){
+function pick(d){sel=d;origin=null;chosenIdx=null;targetDay=null;render()}
+
+function panel(){
  if(!sel){$('#panel').innerHTML='';return}
- const d=sel,{y,m}=view;
- let h=`<div class="card" style="margin-top:12px"><h2>${esc(new Date(y,m,d).toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'}))}</h2>`;
- for(const x of P.sh.slice((d-1)*P.S,d*P.S)){
-  h+=`<div class="row"><b>${ic(P,x.k)} ${lbl(P,x)}</b>`;
-  for(const n of x.n)h+=`<button class="pill" style="background:${col(n)}" title="Cambiar guardia" onclick="sw={id:${x.id},n:${n}};render()">${esc(nm(n))} ⇄</button>`;
+ const d=sel;
+ let h=`<div class="card" style="margin-top:12px"><h2>${esc(new Date(view.y,view.m,d).toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'}))}</h2>`;
+ h+=`<p class="msg">Los intercambios requieren ${NOTICE_H} hs de aviso: solo se pueden mover guardias por guardias y francos por francos, siempre que ambas fechas empiecen después de ese plazo.</p>`;
+ for(const x of P.sh.filter(x=>x.day===d)){
+  h+=`<div class="row"><b>${fmtT(x.s)}–${fmtT(x.e)}</b>`;
+  for(const n of x.n){
+   if(origin&&origin.type==='shift'&&origin.id===x.id&&origin.nurse===n)h+=inlineSwap();
+   else if(shiftLocked(x))h+=`<span class="pill" style="background:${col(n)};opacity:.5">${esc(nm(n))} (dentro de ${NOTICE_H}hs)</span>`;
+   else h+=`<button class="pill" style="background:${col(n)}" onclick='startSwap(${JSON.stringify({type:"shift",id:x.id,nurse:n})})'>${esc(nm(n))} ⇄</button>`}
   if(x.n.length<P.cov)h+='<span class="msg bad">Falta cubrir</span>';
-  h+='</div>';
-  if(sw&&sw.id===x.id){
-   let o='';
-   for(const y2 of P.sh)for(const b of y2.n){
-    if(y2.id===x.id||b===sw.n)continue;
-    if(ok(P,sw.n,y2,x.id)&&ok(P,b,x,y2.id))o+=`<option value="${y2.id}:${b}">${esc(nm(b))} — ${pad(y2.d)}/${pad(P.m+1)} ${lbl(P,y2)}</option>`}
-   h+=`<div class="row"><label style="flex:1">${esc(nm(sw.n))} cambia esta guardia por la de:<select onchange="swap(this.value)"><option value="">${o?'Elegir guardia…':'No hay cambios posibles'}</option>${o}</select></label></div>`}}
- const fo=Array.from({length:P.N},(_,i)=>i).filter(i=>P.fr[i].includes(d));
- h+=`<p class="msg">Francos: ${fo.length?fo.map(i=>esc(nm(i))).join(', '):'ninguno'}</p>`;
- h+='<p class="msg">Los cambios son 1 a 1 (misma duración), respetan descanso y francos y no alteran las horas de nadie.</p></div>';
+  h+='</div>'}
+ const fo=Array.from({length:P.N},(_,i)=>i).filter(i=>P.fr[i].has(d));
+ if(fo.length){h+='<div class="row"><b>Francos</b>';
+  for(const n of fo){
+   if(origin&&origin.type==='franco'&&origin.day===d&&origin.nurse===n)h+=inlineSwap();
+   else if(dayLocked(d))h+=`<span class="pill fr" style="opacity:.5">${esc(nm(n))} (dentro de ${NOTICE_H}hs)</span>`;
+   else h+=`<button class="pill fr" onclick='startSwap(${JSON.stringify({type:"franco",day:d,nurse:n})})'>${esc(nm(n))} ⇄</button>`}
+  h+='</div>'}
+ h+='</div>';
  $('#panel').innerHTML=h}
 
-function swap(v){
- if(!v)return;const P=get(),[id,b]=v.split(':').map(Number),x=P.sh[sw.id],y2=P.sh[id],a=sw.n;
- del(P,a,x);del(P,b,y2);put(P,b,x);put(P,a,y2);sw=null;render()}
+function startSwap(s){origin=s;chosenIdx=null;targetDay=null;render()}
+function candidates(){
+ const s=origin,opts=[];
+ if(s.type==='shift'){
+  const X=P.sh[s.id],A=s.nurse;
+  if(shiftLocked(X))return opts;
+  for(const Y of P.sh){
+   if(Y.id===X.id||shiftLocked(Y))continue;
+   for(const B of Y.n){if(B===A)continue;
+    del(A,X);del(B,Y);const good=ok(A,Y,undefined)&&ok(B,X,undefined);put(A,X);put(B,Y);
+    if(good)opts.push({day:Y.day,label:`${pad(Y.day)}/${pad(view.m+1)} · ${esc(nm(B))} · ${fmtT(Y.s)}–${fmtT(Y.e)}`,fn:()=>{del(A,X);del(B,Y);put(B,X);put(A,Y)}})}}
+ } else {
+  const Fd=s.day,A=s.nurse;
+  if(dayLocked(Fd))return opts;
+  for(let B=0;B<P.N;B++){if(B===A)continue;
+   for(const Fd2 of P.fr[B]){
+    if(dayLocked(Fd2))continue;
+    if(nurseFreeOnDay(A,Fd2)&&nurseFreeOnDay(B,Fd))
+     opts.push({day:Fd2,label:`${pad(Fd2)}/${pad(view.m+1)} · ${esc(nm(B))} · franco`,fn:()=>{P.fr[A].delete(Fd);P.fr[A].add(Fd2);P.fr[B].delete(Fd2);P.fr[B].add(Fd)}})}}
+ }
+ return opts}
+function inlineSwap(){
+ const opts=candidates();window._opts=opts;
+ let h=`<select onchange="chosenIdx=this.value===''?null:parseInt(this.value);targetDay=chosenIdx===null?null:window._opts[chosenIdx].day;render()">`;
+ h+=`<option value="">${opts.length?'Elegir fecha…':'Sin fechas disponibles'}</option>`;
+ opts.forEach((o,i)=>h+=`<option value="${i}" ${chosenIdx===i?'selected':''}>${o.label}</option>`);
+ h+='</select>';
+ if(chosenIdx!==null)h+=`<button class="pill confirm" onclick="confirmSwap()">Confirmar</button>`;
+ h+=`<button class="pill" style="background:var(--mut)" onclick="origin=null;chosenIdx=null;targetDay=null;render()">Cancelar</button>`;
+ return h}
+function confirmSwap(){
+ const o=window._opts[chosenIdx];
+ if(confirm(`¿Confirmás el intercambio con ${o.label.split(' · ')[1]} para el ${o.label.split(' · ')[0]}?`)){
+  o.fn();origin=null;chosenIdx=null;targetDay=null;render()}}
 
-function summary(P){
- const hs=Array.from({length:P.N},(_,i)=>P.mine[i].size*P.dur),mx=Math.max(...hs),mn=Math.min(...hs);
- let h=`<h2>Resumen del mes</h2><p class="msg">Horas por enfermera: ${mn}–${mx} hs (diferencia ${mx-mn} hs)${mx-mn>P.dur?' — no se puede equilibrar más con estas restricciones':''}.</p>`;
+function summary(){
+ const hs=Array.from({length:P.N},(_,i)=>P.mine[i].size*cfg.dur),mx=Math.max(...hs),mn=Math.min(...hs);
+ let h=`<h2>Resumen del mes</h2><p class="msg">Horas por enfermera: ${mn}–${mx} hs (diferencia ${(mx-mn).toFixed(1)} hs)${mx-mn>cfg.dur?' — no se puede equilibrar más con estas restricciones':''}.</p>`;
  if(P.unc)h+=`<p class="msg bad">${P.unc} puestos sin cubrir: faltan enfermeras o sobran francos/requisitos.</p>`;
- if(24%P.dur)h+=`<p class="msg bad">24 no es múltiplo de ${P.dur} hs: quedan horas del día sin guardia.</p>`;
- h+='<table><tr><th>Enfermera</th><th>Guardias</th><th>Horas</th><th>Por franja</th><th>Francos</th></tr>';
+ h+='<table><tr><th>Enfermera</th><th>Guardias</th><th>Horas</th><th>Francos (días)</th></tr>';
  for(let i=0;i<P.N;i++){
-  const c=Array(P.S).fill(0);P.mine[i].forEach(id=>c[P.sh[id].k]++);
-  h+=`<tr><td><span class="dot" style="background:${col(i)}"></span>${esc(nm(i))}</td><td>${P.mine[i].size}</td><td>${hs[i]}</td><td>${c.map((v,k)=>ic(P,k)+' '+v).join(' · ')}</td><td>${P.fr[i].join(', ')}</td></tr>`}
+  h+=`<tr><td><span class="dot" style="background:${col(i)}"></span>${esc(nm(i))}</td><td>${P.mine[i].size}</td><td>${hs[i]}</td><td>${Array.from(P.fr[i]).sort((a,b)=>a-b).join(', ')||'—'}</td></tr>`}
  $('#sum').innerHTML=h+'</table>'}
 
-function mv(d){view.m+=d;if(view.m<0){view.m=11;view.y--}if(view.m>11){view.m=0;view.y++}sel=null;sw=null;render()}
+function mv(d){view.m+=d;if(view.m<0){view.m=11;view.y--}if(view.m>11){view.m=0;view.y++}sel=null;origin=null;chosenIdx=null;targetDay=null;generate();render()}
 function names(){
  $('#names').innerHTML=Array.from({length:cfg.n},(_,i)=>`<input value="${esc(cfg.names[i]||'')}" placeholder="Enfermera ${i+1}" oninput="cfg.names[${i}]=this.value;render()" aria-label="Nombre ${i+1}">`).join('')}
 function read(){
- const v=(id,a,b,d)=>{const x=parseInt($('#'+id).value);return isNaN(x)?d:Math.min(b,Math.max(a,x))};
- cfg.n=v('n',1,40,6);cfg.f=v('f',0,31,0);cfg.dur=v('dur',1,24,12);cfg.rest=v('rest',0,48,12);cfg.cov=Math.min(v('cov',1,10,1),cfg.n);
- store={};sel=null;sw=null;hl=null;names();render()}
-['n','f','dur','rest','cov'].forEach(id=>$('#'+id).addEventListener('change',read));
-names();render();
+ const v=(id,a,b,d)=>{const x=parseFloat($('#'+id).value);return isNaN(x)?d:Math.min(b,Math.max(a,x))};
+ cfg.n=v('n',1,40,6);cfg.fpw=v('fpw',0,7,1);cfg.dur=v('dur',1,24,12);cfg.rest=v('rest',0,48,12);cfg.cov=Math.min(v('cov',1,10,1),cfg.n);
+ const tv=$('#startT').value||'08:00';const[hh,mm]=tv.split(':').map(Number);cfg.startH=hh||0;cfg.startM=mm||0;
+ sel=null;origin=null;chosenIdx=null;targetDay=null;filters={G:null,F:null};
+ names();generate();render()}
+['n','fpw','dur','rest','cov','startT'].forEach(id=>$('#'+id).addEventListener('change',read));
+names();generate();render();
 </script></body></html>
